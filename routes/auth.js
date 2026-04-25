@@ -15,12 +15,19 @@ router.post("/register",[
     }),
   body('confirmPassword').trim().custom((value, {req})=>{
     if(value !== req.body.password){
-      throw new Error('Passwords do not match');
+      throw new Error('Passwords does not match');
     }
     return true;
   }),
   body('name').trim().notEmpty().withMessage('Name is required'),
+  body('name').trim().isLength({ min: 3 }).withMessage('Name must be at least 3 characters long'),
   body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
 ] ,authController.signup) 
+
+
+router.post('/login',[
+  body('email').trim().isEmail().withMessage('Please enter a valid email address'),
+  body('password').trim().notEmpty().withMessage('Password is required'),
+],authController.login)
 
 module.exports = router;
