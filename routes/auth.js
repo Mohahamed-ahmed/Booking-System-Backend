@@ -30,4 +30,16 @@ router.post('/login',[
   body('password').trim().notEmpty().withMessage('Password is required'),
 ],authController.login)
 
+router.post('/forget-password',[
+  body('email').trim().isEmail().withMessage('Please enter a valid email address'),
+],authController.forgetPassword)
+
+router.post('/reset-password',[
+  body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+],authController.resetPassword)
+
+router.post('/refresh-token', authController.refreshToken)
+
+router.post('/logout', authController.logout)
+
 module.exports = router;
