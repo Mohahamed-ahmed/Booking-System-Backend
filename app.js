@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const authRoutes = require('./routes/auth')
 const dotenv = require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const userRoutes = require('./routes/user')
+const destinationRoutes = require('./routes/destinations')
+const packageRoutes = require('./routes/package')
+const bookingRoutes = require('./routes/booking')
 
 const app = express();
 app.use(express.json());
@@ -19,6 +23,10 @@ app.use((req, res, next) => {
 const mongoUrl = process.env.MONGO_URL;
 
 app.use('/auth', authRoutes)
+app.use(userRoutes)
+app.use(destinationRoutes)
+app.use(packageRoutes)
+app.use(bookingRoutes)
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
