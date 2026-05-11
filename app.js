@@ -35,11 +35,12 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-mongoose
-  .connect(mongoUrl)
-  .then((result) => {
-    app.listen(8080);
+mongoose.connect(mongoUrl)
+  .then(() => {
+    console.log("MongoDB connected");
   })
-  .catch((err) => {
+  .catch(err => {
     console.log("Error connecting to MongoDB:", err);
   });
+
+module.exports = app;
