@@ -19,7 +19,11 @@ exports.getUserProfile = (req,res,next)=>{
             error.statusCode = 404;
             throw error;
         }
-        res.status(200).json({ user });
+        let userData = {
+            name: user.name,
+            email: user.email,
+        }
+        res.status(200).json({ userData });
     })
     .catch(err=>{
         next(err);
