@@ -29,3 +29,22 @@ exports.getUserProfile = (req,res,next)=>{
         next(err);
     })
 }
+exports.getuserById = (req,res,next)=>{
+    const userId = req.params.id;
+    User.findById(userId)
+    .then(user=>{
+        if(!user){
+            const error = new Error('User not found');
+            error.statusCode = 404;
+            throw error;
+        }
+        let userData = {
+            name: user.name,
+            email: user.email,
+        }
+        res.status(200).json({ userData });
+    })
+    .catch(err=>{
+        next(err);
+    })
+}
