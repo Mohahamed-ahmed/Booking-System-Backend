@@ -1,4 +1,5 @@
 const Destination = require('../models/destination')
+const Package = require('../models/package')
 const cloudinaryUploader = require('../utils/cloudinaryUpload')
 const cloudinary = require('../config/cloudinary'); 
 const { mongo, default: mongoose } = require('mongoose');
@@ -90,11 +91,15 @@ exports.updateDestination = (req,res,next)=>{
 
 exports.deleteDestination = (req,res,next)=>{
     const destId = req.params.id;
+
     if(mongoose.Types.ObjectId.isValid(destId) === false){
         const error = new Error('Invalid destination ID');
         error.statusCode = 400;
         throw error;
     }
+
+    let loadedDestination;
+
     Destination.findById(destId)
     .then(destination=>{
         if(!destination){
@@ -102,14 +107,45 @@ exports.deleteDestination = (req,res,next)=>{
             error.statusCode = 404;
             throw error;
         }
-        const publicId = extractPublicId(destination.image)
-        return cloudinary.uploader.destroy(publicId) // Delete the image from Cloudinary
+
+        loadedDestination = destination;
+
+        return Package.find({ destinationId: destId });
+    })
+    .then(packages=>{
+
+        const deleteImagesPromises = packages.map(pkg => {
+
+            const publicId = extractPublicId(pkg.image);
+
+            return cloudinary.uploader.destroy(publicId);
+        });
+
+        return Promise.all(deleteImagesPromises);
     })
     .then(()=>{
-        return Destination.findByIdAndDelete(destId)
+
+        return Package.deleteMany({ destinationId: destId });
+
     })
     .then(()=>{
-        res.status(200).json({ message: 'Destination deleted successfully' });
+
+        const publicId = extractPublicId(loadedDestination.image);
+
+        return cloudinary.uploader.destroy(publicId);
+
+    })
+    .then(()=>{
+
+        return Destination.findByIdAndDelete(destId);
+
+    })
+    .then(()=>{
+
+        res.status(200).json({
+            message: 'Destination deleted successfully'
+        });
+
     })
     .catch(err=>{
         next(err);
