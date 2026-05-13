@@ -87,8 +87,8 @@ exports.login = (req,res,next)=>{
     .then(()=>{
       res.cookie('refreshToken', Loadeduser.refreshToken, {
         httpOnly: true,
-        secure: false, // Set to true in production with HTTPS
-        sameSite: 'strict',
+        secure: true, // Set to true in production with HTTPS
+        sameSite: 'none',
         maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
       });
       res.status(200).json({accessToken:token, userId:Loadeduser._id.toString(), role:Loadeduser.role})
