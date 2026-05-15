@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'booking-system-frontend-phi.vercel.app'
+  'https://booking-system-frontend-phi.vercel.app/'
 ];
 
 app.use((req, res, next) => {
