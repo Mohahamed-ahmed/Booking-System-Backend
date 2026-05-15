@@ -15,7 +15,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://booking-system-frontend-phi.vercel.app/'
+  'https://booking-system-frontend-phi.vercel.app'
 ];
 
 app.use((req, res, next) => {
@@ -25,9 +25,13 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
 
   next();
 });
